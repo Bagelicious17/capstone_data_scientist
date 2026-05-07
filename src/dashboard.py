@@ -185,7 +185,7 @@ def get_top_words(texts, n=50):
 
 df, data_path = load_data()
 if df is None:
-    st.error("File dataset tidak ditemukan. Pastikan `Dataset_NLP_Siap_Model.xlsx` ada di `data/processed/`.")
+    st.error("File dataset tidak ditemukan. Pastikan `Dataset_NLP_Siap_Model_V2.xlsx` ada di `data/processed/`.")
     st.stop()
 
 cat_list = sorted(df['Category'].unique())

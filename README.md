@@ -12,6 +12,7 @@ capstone_data_scientist/
 ├── reports/                 # Folder untuk menyimpan hasil evaluasi, plot, atau metrik model
 ├── src/                     # Source code operasional utama
 │   ├── data_cleaning.py     # Skrip pipeline pembersihan data & NLP preprocessing (NLTK)
+│   ├── dashboard.py         # Dashboard interaktif (Streamlit) untuk profil dataset
 │   └── data_wrangling_EDA.ipynb # Notebook untuk Exploratory Data Analysis (EDA)
 ├── testing/                 # Folder untuk eksperimen script / test cases (test1.py)
 ├── requirements.txt         # Daftar dependencies library Python
@@ -45,6 +46,13 @@ Untuk melihat visualisasi analisis distribusi kategori profesi, persebaran kata 
 ```bash
 jupyter notebook src/data_wrangling_EDA.ipynb
 ```
+
+### 4. Menjalankan Dashboard Analisis Data
+Untuk memberikan visualisasi interaktif mengenai kualitas dataset (distribusi kelas, outlier, dan *word cloud*) kepada tim AI Engineer, jalankan *dashboard* berbasis Streamlit:
+```bash
+streamlit run src/dashboard.py
+```
+*(Dashboard akan otomatis terbuka di browser melalui `http://localhost:8501`)*
 
 ## ⚙️ Tahap Selanjutnya (Future Work)
 - **Modeling**: Melakukan ekstraksi fitur numerik (misalnya menggunakan `TF-IDF Vectorizer` atau *Word Embeddings*) dan melatih algoritma Machine Learning (seperti Naive Bayes, SVM, atau Random Forest) untuk memprediksi kategori.
