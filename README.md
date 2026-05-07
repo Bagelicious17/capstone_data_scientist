@@ -4,6 +4,9 @@ Proyek ini adalah pipeline pemrosesan teks berbasis *Natural Language Processing
 
 **🌐 Live Dashboard:** [https://capstonedatascientist-yzdfoknpqbiznrkgvuz6p8.streamlit.app/](https://capstonedatascientist-yzdfoknpqbiznrkgvuz6p8.streamlit.app/)
 
+## 📊 Informasi Dataset
+Dataset mentah (`Dataset_CV.xlsx`) terdiri dari sekumpulan teks *resume* profesional yang mencakup 8 kategori jabatan utama (seperti *Data Science*, *Software Engineer*, *Business Analyst*, dll). Dataset ini telah melalui tahap anonimisasi dan disiapkan khusus untuk melatih model agar dapat mengenali pola kosakata dari masing-masing profesi.
+
 ## 📁 Struktur Direktori
 
 ```text
@@ -24,8 +27,21 @@ capstone_data_scientist/
 ## 🚀 Cara Menjalankan Pipeline
 
 ### 1. Instalasi Dependencies
-Pastikan Anda sudah menginstall Python. Buka terminal/Command Prompt dan jalankan perintah berikut untuk menginstall semua library yang dibutuhkan:
+**Prasyarat:** Pastikan Anda menggunakan **Python 3.9 atau lebih baru**.
+
+Sangat disarankan untuk membuat *Virtual Environment* terlebih dahulu agar *library* proyek ini terisolasi dengan rapi. Buka terminal/Command Prompt dan jalankan urutan perintah berikut:
+
 ```bash
+# 1. Membuat virtual environment (bernama 'venv')
+python -m venv venv
+
+# 2. Mengaktifkan virtual environment
+# Untuk pengguna Windows:
+venv\Scripts\activate
+# Untuk pengguna Mac/Linux:
+# source venv/bin/activate
+
+# 3. Menginstall seluruh library yang dibutuhkan
 pip install -r requirements.txt
 ```
 
