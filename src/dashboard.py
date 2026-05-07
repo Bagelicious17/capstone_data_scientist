@@ -331,9 +331,10 @@ with tab1:
             color_discrete_sequence=COLORS,
         )
         fig.update_traces(textposition='outside', textfont_size=11, cliponaxis=False)
-        fig.update_layout(**LAYOUT, height=370, showlegend=False,
+        fig.update_layout(**LAYOUT)
+        fig.update_layout(height=370, showlegend=False,
                           xaxis_title='Jumlah CV', yaxis_title='',
-                          margin=dict(l=160, r=50))
+                          margin=dict(t=40, b=40, l=160, r=50))
         st.plotly_chart(fig, use_container_width=True, theme=None)
 
     with col_b:
