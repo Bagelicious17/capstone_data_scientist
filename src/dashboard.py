@@ -333,7 +333,7 @@ with tab1:
         fig.update_traces(textposition='outside', textfont_size=11)
         fig.update_layout(**LAYOUT, height=370, showlegend=False,
                           xaxis_title='Jumlah CV', yaxis_title='')
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, theme=None)
 
     with col_b:
         st.markdown('<p class="section-header">Proporsi per Kategori</p>', unsafe_allow_html=True)
@@ -345,7 +345,7 @@ with tab1:
                           hovertemplate='<b>%{label}</b><br>%{value} CV (%{percent})<extra></extra>')
         fig.update_layout(**LAYOUT, height=370, showlegend=True,
                           legend=dict(orientation='v', x=1.02, y=0.5, font=dict(size=11)))
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, theme=None)
 
     st.markdown('<p class="section-header">Ringkasan Statistik per Kategori</p>', unsafe_allow_html=True)
     summary = df_f.groupby('Category').agg(
@@ -374,7 +374,7 @@ with tab2:
                       annotation_text=f"Median {df_f['Word_Count'].median():.0f}",
                       annotation_font_size=11, annotation_font_color='#d4860b')
         fig.update_layout(**LAYOUT, height=350, xaxis_title='Jumlah Kata', yaxis_title='Frekuensi')
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, theme=None)
 
     with col_b:
         st.markdown('<p class="section-header">Boxplot per Kategori</p>', unsafe_allow_html=True)
@@ -383,7 +383,7 @@ with tab2:
                      color_discrete_sequence=COLORS)
         fig.update_layout(**LAYOUT, height=350, showlegend=False,
                           xaxis_tickangle=-30, xaxis_title='', yaxis_title='Jumlah Kata')
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, theme=None)
 
     st.markdown('<p class="section-header">Violin Plot</p>', unsafe_allow_html=True)
     fig = px.violin(df_f, x='Category', y='Word_Count',
@@ -391,7 +391,7 @@ with tab2:
                     color_discrete_sequence=COLORS)
     fig.update_layout(**LAYOUT, height=390, showlegend=False,
                       xaxis_tickangle=-25, xaxis_title='', yaxis_title='Jumlah Kata')
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, theme=None)
 
     st.markdown('<p class="section-header">Korelasi Word Count vs Character Count</p>', unsafe_allow_html=True)
     fig = px.scatter(df_f, x='Word_Count', y='Char_Count',
@@ -401,7 +401,7 @@ with tab2:
     fig.update_layout(**LAYOUT, height=390,
                       xaxis_title='Word Count', yaxis_title='Character Count',
                       legend=dict(orientation='h', y=-0.2, font=dict(size=10)))
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, theme=None)
     st.caption(f"Korelasi Pearson: **{df_f['Word_Count'].corr(df_f['Char_Count']):.4f}** — kedua fitur redundan, cukup gunakan salah satu saat pemodelan.")
 
 
@@ -442,7 +442,7 @@ with tab3:
         )
         fig.update_layout(**LAYOUT, height=470, showlegend=False,
                           coloraxis_showscale=False, xaxis_title='Frekuensi', yaxis_title='')
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, theme=None)
 
 
 # ── TAB 4 — PERBANDINGAN & OUTLIER ──────────────────────────────
@@ -464,7 +464,7 @@ with tab4:
         fig.update_layout(**LAYOUT, height=350,
                           xaxis_title='Jumlah Kata', yaxis_title='Frekuensi',
                           legend=dict(orientation='h', y=1.08))
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, theme=None)
 
         c1, c2 = st.columns(2)
         for col_ui, cat in zip([c1, c2], [cat1, cat2]):
@@ -507,7 +507,7 @@ with tab4:
     fig.update_layout(**LAYOUT, height=370,
                       xaxis_title='Index CV', yaxis_title='Jumlah Kata',
                       legend=dict(orientation='h', y=1.08))
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, theme=None)
 
     n_out = (df_f['Status'] == 'Outlier').sum()
     st.caption(f"Ditemukan **{n_out} outlier** dari {len(df_f):,} CV ({n_out/len(df_f)*100:.1f}%) — outlier dipertahankan karena konten teks tetap valid.")
