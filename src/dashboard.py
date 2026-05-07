@@ -183,7 +183,7 @@ LAYOUT = dict(
     font=dict(family='Inter, Segoe UI, sans-serif', size=12, color=plotly_font),
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-    margin=dict(t=40, b=50, l=180, r=20),
+    margin=dict(t=40, b=50, l=180, r=80),
     xaxis=dict(showgrid=True, gridcolor=plotly_grid, zeroline=False, linecolor=border_color, automargin=True),
     yaxis=dict(showgrid=True, gridcolor=plotly_grid, zeroline=False, linecolor=border_color, automargin=True),
 )
