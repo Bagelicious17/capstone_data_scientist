@@ -183,7 +183,7 @@ LAYOUT = dict(
     font=dict(family='Inter, Segoe UI, sans-serif', size=12, color=plotly_font),
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-    margin=dict(t=40, b=50, l=180, r=80),
+    margin=dict(t=40, b=40, l=20, r=20),
     xaxis=dict(showgrid=True, gridcolor=plotly_grid, zeroline=False, linecolor=border_color, automargin=True),
     yaxis=dict(showgrid=True, gridcolor=plotly_grid, zeroline=False, linecolor=border_color, automargin=True),
 )
@@ -330,9 +330,10 @@ with tab1:
             color='Category', text='Jumlah',
             color_discrete_sequence=COLORS,
         )
-        fig.update_traces(textposition='outside', textfont_size=11)
+        fig.update_traces(textposition='outside', textfont_size=11, cliponaxis=False)
         fig.update_layout(**LAYOUT, height=370, showlegend=False,
-                          xaxis_title='Jumlah CV', yaxis_title='')
+                          xaxis_title='Jumlah CV', yaxis_title='',
+                          margin=dict(l=160, r=50))
         st.plotly_chart(fig, use_container_width=True, theme=None)
 
     with col_b:
