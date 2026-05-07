@@ -25,98 +25,126 @@ matplotlib.use('Agg')
 
 st.set_page_config(
     page_title="CV Classification Dashboard",
-    page_icon="📄",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-st.markdown("""
-<style>
-    html, body, [class*="css"] {
-        font-family: 'Inter', 'Segoe UI', sans-serif;
-    }
-    #MainMenu, footer, header { visibility: hidden; }
+if 'theme' not in st.session_state:
+    st.session_state.theme = 'Light'
 
-    .card {
-        background-color: #ffffff;
-        border: 1px solid #e5e7eb;
+if st.session_state.theme == 'Light':
+    bg_main = '#ffffff'
+    bg_sidebar = '#f9fafb'
+    bg_card = '#ffffff'
+    border_color = '#e5e7eb'
+    text_main = '#1e3a5f'
+    text_sub = '#6b7280'
+    text_muted = '#9ca3af'
+    plotly_font = '#374151'
+    plotly_grid = '#f3f4f6'
+    wordcloud_bg = 'white'
+else:
+    bg_main = '#0e1117'
+    bg_sidebar = '#262730'
+    bg_card = '#1f2937'
+    border_color = '#374151'
+    text_main = '#f9fafb'
+    text_sub = '#9ca3af'
+    text_muted = '#6b7280'
+    plotly_font = '#e5e7eb'
+    plotly_grid = '#374151'
+    wordcloud_bg = '#0e1117'
+
+st.markdown(f"""
+<style>
+    .stApp {{ background-color: {bg_main}; }}
+    [data-testid="stHeader"] {{ background-color: transparent; }}
+    
+    html, body, [class*="css"] {{
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+    }}
+    #MainMenu, footer, header {{ visibility: hidden; }}
+
+    .card {{
+        background-color: {bg_card};
+        border: 1px solid {border_color};
         border-radius: 10px;
         padding: 20px 24px;
         text-align: center;
         box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    }
-    .card-value {
+    }}
+    .card-value {{
         font-size: 2rem;
         font-weight: 700;
-        color: #1e3a5f;
+        color: {text_main};
         margin: 0;
         line-height: 1.2;
-    }
-    .card-label {
+    }}
+    .card-label {{
         font-size: 0.78rem;
-        color: #6b7280;
+        color: {text_sub};
         margin: 4px 0 0 0;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-    }
-    .card-sub {
+    }}
+    .card-sub {{
         font-size: 0.73rem;
-        color: #9ca3af;
+        color: {text_muted};
         margin: 2px 0 0 0;
-    }
-    .section-header {
+    }}
+    .section-header {{
         font-size: 0.88rem;
         font-weight: 600;
-        color: #374151;
+        color: {text_main};
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        border-bottom: 2px solid #1e3a5f;
+        border-bottom: 2px solid {text_main};
         padding-bottom: 6px;
         margin: 24px 0 14px 0;
-    }
-    .page-title {
+    }}
+    .page-title {{
         font-size: 1.5rem;
         font-weight: 700;
-        color: #1e3a5f;
+        color: {text_main};
         margin: 0;
-    }
-    .page-subtitle {
+    }}
+    .page-subtitle {{
         font-size: 0.85rem;
-        color: #6b7280;
+        color: {text_sub};
         margin: 4px 0 0 0;
-    }
-    .divider { height: 1px; background: #e5e7eb; margin: 14px 0; }
+    }}
+    .divider {{ height: 1px; background: {border_color}; margin: 14px 0; }}
 
-    section[data-testid="stSidebar"] {
-        background-color: #f9fafb;
-        border-right: 1px solid #e5e7eb;
-    }
-    .sidebar-label {
+    section[data-testid="stSidebar"] {{
+        background-color: {bg_sidebar} !important;
+        border-right: 1px solid {border_color};
+    }}
+    .sidebar-label {{
         font-size: 0.73rem;
         font-weight: 600;
-        color: #6b7280;
+        color: {text_sub};
         text-transform: uppercase;
         letter-spacing: 0.06em;
         margin-bottom: 6px;
-    }
-    .stTabs [data-baseweb="tab-list"] {
+    }}
+    .stTabs [data-baseweb="tab-list"] {{
         gap: 0px;
-        border-bottom: 2px solid #e5e7eb;
-    }
-    .stTabs [data-baseweb="tab"] {
+        border-bottom: 2px solid {border_color};
+    }}
+    .stTabs [data-baseweb="tab"] {{
         font-size: 0.83rem;
         font-weight: 500;
-        color: #6b7280;
+        color: {text_sub};
         padding: 10px 20px;
         border-radius: 0;
         background: transparent;
-    }
-    .stTabs [aria-selected="true"] {
-        color: #1e3a5f !important;
-        border-bottom: 2px solid #1e3a5f !important;
+    }}
+    .stTabs [aria-selected="true"] {{
+        color: {text_main} !important;
+        border-bottom: 2px solid {text_main} !important;
         font-weight: 600 !important;
-    }
-    .stDownloadButton > button {
+    }}
+    .stDownloadButton > button {{
         background-color: #1e3a5f;
         color: white;
         border: none;
@@ -124,8 +152,12 @@ st.markdown("""
         padding: 8px 20px;
         font-weight: 500;
         font-size: 0.83rem;
-    }
-    .stDownloadButton > button:hover { background-color: #2d5282; }
+    }}
+    .stDownloadButton > button:hover {{ background-color: #2d5282; }}
+    
+    [data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li {{
+        color: {text_main};
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -137,12 +169,12 @@ COLORS = ['#1e3a5f','#2e7d6e','#c0392b','#7d3c98',
           '#d4860b','#1a6b9a','#2e6b3e','#8b5e3c']
 
 LAYOUT = dict(
-    font=dict(family='Inter, Segoe UI, sans-serif', size=12, color='#374151'),
+    font=dict(family='Inter, Segoe UI, sans-serif', size=12, color=plotly_font),
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
     margin=dict(t=40, b=10, l=10, r=10),
-    xaxis=dict(showgrid=True, gridcolor='#f3f4f6', zeroline=False, linecolor='#e5e7eb'),
-    yaxis=dict(showgrid=True, gridcolor='#f3f4f6', zeroline=False, linecolor='#e5e7eb'),
+    xaxis=dict(showgrid=True, gridcolor=plotly_grid, zeroline=False, linecolor=border_color),
+    yaxis=dict(showgrid=True, gridcolor=plotly_grid, zeroline=False, linecolor=border_color),
 )
 
 # ==============================================================
@@ -195,6 +227,13 @@ cat_list = sorted(df['Category'].unique())
 # ==============================================================
 
 with st.sidebar:
+    st.markdown('<p class="sidebar-label">Tema Tampilan</p>', unsafe_allow_html=True)
+    tema = st.radio("Tema", ["Light", "Dark"], index=0 if st.session_state.theme == 'Light' else 1, horizontal=True, label_visibility="collapsed")
+    if tema != st.session_state.theme:
+        st.session_state.theme = tema
+        st.rerun()
+
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
     st.markdown('<p class="sidebar-label">Filter Kategori</p>', unsafe_allow_html=True)
     kategori_dipilih = st.multiselect(
         label="",
@@ -369,7 +408,7 @@ with tab3:
     else:
         wc_obj = WordCloud(
             width=1400, height=500,
-            background_color='white',
+            background_color=wordcloud_bg,
             colormap='Blues',
             max_words=80,
             prefer_horizontal=0.75,
