@@ -18,14 +18,31 @@
 import os
 import re
 import pandas as pd
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+
+# Pastikan resource NLTK tersedia
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords', quiet=True)
+try:
+    nltk.data.find('corpora/wordnet')
+except LookupError:
+    nltk.download('wordnet', quiet=True)
+
+STOPWORDS = set(stopwords.words('english'))
+LEMMATIZER = WordNetLemmatizer()
+
 
 # ==============================================================
 # KONFIGURASI PATH
 # ==============================================================
 
 BASE_DIR    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-INPUT_FILE  = os.path.join(BASE_DIR, 'data', 'raw', 'Dataset_CV.xlsx')
-OUTPUT_FILE = os.path.join(BASE_DIR, 'data', 'processed', 'Dataset_NLP_Siap_Model.xlsx')
+INPUT_FILE  = os.path.join(BASE_DIR, 'data', 'processed', 'Dataset_NLP_Siap_Model.xlsx')
+OUTPUT_FILE = os.path.join(BASE_DIR, 'data', 'processed', 'Dataset_NLP_Siap_Model_V2.xlsx')
 
 # ==============================================================
 # TAHAP 1 — LOAD DATASET
@@ -41,13 +58,13 @@ def load_data() -> pd.DataFrame:
     if not os.path.exists(INPUT_FILE):
         raise FileNotFoundError(
             f"File input tidak ditemukan: {INPUT_FILE}\n"
-            "Pastikan file Dataset_CV.xlsx ada di folder data/raw/"
+            "Pastikan file Dataset_NLP_Siap_Model.xlsx ada di folder data/processed/"
         )
 
-    print(f"\n📄 TAHAP 1 — LOAD DATA")
+    print(f"\nTAHAP 1 — LOAD DATA")
     print("-" * 40)
     df = pd.read_excel(INPUT_FILE, engine='openpyxl')
-    print(f"✅ File berhasil dimuat: {INPUT_FILE}")
+    print(f" FILE BERHASIL DIMUAT: {INPUT_FILE}")
     print(f"   Jumlah baris  : {df.shape[0]:,}")
     print(f"   Jumlah kolom  : {df.shape[1]}")
     print(f"   Kolom         : {list(df.columns)}")
@@ -60,28 +77,40 @@ def load_data() -> pd.DataFrame:
 
 def bersihkan_teks(teks_mentah: str) -> str:
     """
-    Bersihkan teks hasil OCR:
-    - Hapus karakter unicode tersembunyi (BOM, ZWNJ, dll)
-    - Hapus simbol noise, sisakan huruf/angka/tanda baca penting
-    - Rapikan spasi berlebihan
+    Bersihkan teks untuk keperluan pemodelan NLP:
+    - Lowercase semua teks
+    - Hapus URL, Email, dan Angka (PII/Noise)
+    - Hapus simbol/tanda baca (hanya sisakan alfabet)
+    - Hapus Stopwords (kata umum bahasa Inggris)
+    - Terapkan Lemmatization (kembalikan kata ke bentuk dasar)
     """
     if not isinstance(teks_mentah, str):
         teks_mentah = str(teks_mentah)
 
-    # Hapus karakter unicode tersembunyi
-    teks = re.sub(r'[\ufeff\u200b\u200c\u200d\u00a0]', ' ', teks_mentah)
+    # 1. Lowercase
+    teks = teks_mentah.lower()
 
-    # Hapus simbol noise OCR, sisakan: huruf, angka, spasi, dan tanda baca penting
-    teks = re.sub(r'[^a-zA-Z0-9\s.,\-\/|@+:;()]', ' ', teks)
+    # 2. Hapus Email
+    teks = re.sub(r'\S+@\S+', ' ', teks)
 
-    # Rapikan spasi berlebihan
-    teks = re.sub(r'\s+', ' ', teks).strip()
+    # 3. Hapus URL/Links
+    teks = re.sub(r'http\S+|www\.\S+', ' ', teks)
 
-    return teks
+    # 4. Hapus karakter selain alfabet (angka, tanda baca, simbol dihapus)
+    teks = re.sub(r'[^a-z\s]', ' ', teks)
+
+    # 5. Tokenisasi kata, hapus stopwords & kata pendek (< 3 huruf), lalu Lemmatize
+    words = teks.split()
+    cleaned_words = [
+        LEMMATIZER.lemmatize(w) for w in words 
+        if w not in STOPWORDS and len(w) > 2
+    ]
+
+    return ' '.join(cleaned_words)
 
 
 def terapkan_cleaning(df: pd.DataFrame) -> pd.DataFrame:
-    print(f"\n📄 TAHAP 2 — PEMBERSIHAN TEKS")
+    print(f"\nTAHAP 2 — PEMBERSIHAN TEKS")
     print("-" * 40)
 
     df = df.copy()
@@ -93,7 +122,7 @@ def terapkan_cleaning(df: pd.DataFrame) -> pd.DataFrame:
 
     rata_sebelum = df['Text'].apply(len).mean()
     rata_sesudah = df['Clean_Text'].apply(len).mean()
-    print(f"✅ Kolom Clean_Text berhasil dibuat")
+    print(f" KOLOM Clean_Text berhasil dibuat")
     print(f"   Rata-rata panjang sebelum : {rata_sebelum:.0f} karakter")
     print(f"   Rata-rata panjang sesudah : {rata_sesudah:.0f} karakter")
 
@@ -105,7 +134,7 @@ def terapkan_cleaning(df: pd.DataFrame) -> pd.DataFrame:
 # ==============================================================
 
 def deduplikasi(df: pd.DataFrame) -> pd.DataFrame:
-    print(f"\n📄 TAHAP 3 — DEDUPLIKASI")
+    print(f"\nTAHAP 3 — DEDUPLIKASI")
     print("-" * 40)
 
     sebelum = len(df)
@@ -113,9 +142,9 @@ def deduplikasi(df: pd.DataFrame) -> pd.DataFrame:
     sesudah = len(df)
 
     if sebelum != sesudah:
-        print(f"⚠️  {sebelum - sesudah} baris duplikat dihapus")
+        print(f"{sebelum - sesudah} baris duplikat dihapus")
     else:
-        print(f"✅ Tidak ada duplikat ditemukan")
+        print(f"TIDAK ADA DUPLIKAT DITEMUKAN")
 
     print(f"   Sisa data: {sesudah:,} baris")
     return df
@@ -126,21 +155,24 @@ def deduplikasi(df: pd.DataFrame) -> pd.DataFrame:
 # ==============================================================
 
 def feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
-    print(f"\n📄 TAHAP 4 — FEATURE ENGINEERING")
+    print(f"\nTAHAP 4 — FEATURE ENGINEERING")
     print("-" * 40)
 
     df = df.copy()
 
     # Word Count dari Clean_Text
     df['Word_Count'] = df['Clean_Text'].apply(lambda x: len(str(x).split()))
-    print(f"✅ Kolom Word_Count berhasil dibuat")
+    print(f" KOLOM Word_Count berhasil dibuat ")
     print(f"   Rata-rata : {df['Word_Count'].mean():.0f} kata")
     print(f"   Min       : {df['Word_Count'].min()} kata")
     print(f"   Maks      : {df['Word_Count'].max()} kata")
 
-    # ID unik per CV
-    df.insert(0, 'ID_CV', ['CV_' + str(i).zfill(4) for i in range(1, len(df) + 1)])
-    print(f"✅ Kolom ID_CV berhasil dibuat (CV_0001 s/d CV_{len(df):04d})")
+    # ID unik per CV (jika belum ada)
+    if 'ID_CV' not in df.columns:
+        df.insert(0, 'ID_CV', ['CV_' + str(i).zfill(4) for i in range(1, len(df) + 1)])
+        print(f"KOLOM ID_CV BERHASIL DIBUAT (CV_0001 s/d CV_{len(df):04d})")
+    else:
+        print(f" KOLOM ID_CV SUDAH ADA.")
 
     return df
 
@@ -150,7 +182,7 @@ def feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
 # ==============================================================
 
 def restrukturisasi_dan_export(df: pd.DataFrame) -> pd.DataFrame:
-    print(f"\n📄 TAHAP 5 — RESTRUKTURISASI & EXPORT")
+    print(f"\nTAHAP 5 — RESTRUKTURISASI & EXPORT")
     print("-" * 40)
 
     kolom_final = ['ID_CV', 'Category', 'Word_Count', 'Clean_Text', 'Text']
@@ -164,12 +196,12 @@ def restrukturisasi_dan_export(df: pd.DataFrame) -> pd.DataFrame:
     # Reset ID setelah deduplikasi agar tetap urut
     df_final['ID_CV'] = ['CV_' + str(i).zfill(4) for i in range(1, len(df_final) + 1)]
 
-    print(f"✅ Urutan kolom final : {kolom_final}")
-    print(f"✅ Total baris final  : {len(df_final):,}")
+    print(f" URUTAN KOLOM FINAL : {kolom_final}")
+    print(f" TOTAL BARIS FINAL  : {len(df_final):,}")
 
-    print(f"\n💾 Menyimpan ke: {OUTPUT_FILE}")
+    print(f"\nMENYIMPAN FILE KE: {OUTPUT_FILE}")
     df_final.to_excel(OUTPUT_FILE, index=False, engine='openpyxl')
-    print(f"✅ File berhasil disimpan!")
+    print(f"✅ FILE BERHASI DISIMPAN!!")
 
     return df_final
 
