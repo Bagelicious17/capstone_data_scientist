@@ -155,9 +155,20 @@ st.markdown(f"""
     }}
     .stDownloadButton > button:hover {{ background-color: #2d5282; }}
     
-    [data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li {{
+    /* Override global text color for Streamlit components */
+    .stApp, [data-testid="stAppViewContainer"] {{
+        color: {text_main} !important;
+    }}
+    [data-testid="stMarkdownContainer"] *, [data-testid="stText"] *, label, p, span, li, h1, h2, h3, h4, h5, h6 {{
         color: {text_main};
     }}
+
+    /* Protect our custom classes from global overrides */
+    .card-label {{ color: {text_sub} !important; }}
+    .card-sub {{ color: {text_muted} !important; }}
+    .sidebar-label {{ color: {text_sub} !important; }}
+    .stTabs [data-baseweb="tab"] {{ color: {text_sub} !important; }}
+    .stTabs [aria-selected="true"] {{ color: {text_main} !important; }}
 </style>
 """, unsafe_allow_html=True)
 
