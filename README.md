@@ -2,6 +2,8 @@
 
 Proyek ini adalah pipeline pemrosesan teks berbasis *Natural Language Processing* (NLP) untuk melakukan klasifikasi dokumen Curriculum Vitae (CV) secara otomatis berdasarkan keahlian dan kategori industri.
 
+**🌐 Live Dashboard:** [https://capstonedatascientist-yzdfoknpqbiznrkgvuz6p8.streamlit.app/](https://capstonedatascientist-yzdfoknpqbiznrkgvuz6p8.streamlit.app/)
+
 ## 📁 Struktur Direktori
 
 ```text
@@ -53,6 +55,9 @@ Untuk memberikan visualisasi interaktif mengenai kualitas dataset (distribusi ke
 streamlit run src/dashboard.py
 ```
 *(Dashboard akan otomatis terbuka di browser melalui `http://localhost:8501`)*
+
+**Catatan:** Anda juga dapat langsung melihat versi *live* yang sudah di-*deploy* di sini: 
+👉 [https://capstonedatascientist-yzdfoknpqbiznrkgvuz6p8.streamlit.app/](https://capstonedatascientist-yzdfoknpqbiznrkgvuz6p8.streamlit.app/)
 
 ## ⚙️ Tahap Selanjutnya (Future Work)
 - **Modeling**: Melakukan ekstraksi fitur numerik (misalnya menggunakan `TF-IDF Vectorizer` atau *Word Embeddings*) dan melatih algoritma Machine Learning (seperti Naive Bayes, SVM, atau Random Forest) untuk memprediksi kategori.
