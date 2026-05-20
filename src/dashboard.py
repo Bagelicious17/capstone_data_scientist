@@ -458,7 +458,8 @@ with tab2:
             color_discrete_map={'Aman': '#2e7d6e', 'Cukup': '#d4860b', 'Perlu Enrichment': '#c0392b'},
         )
         fig.update_traces(textposition='outside', cliponaxis=False)
-        fig.update_layout(**LAYOUT, height=390, xaxis_title='Jumlah CV', yaxis_title='', margin=dict(t=40, b=40, l=180, r=60))
+        fig.update_layout(**LAYOUT, height=390, xaxis_title='Jumlah CV', yaxis_title='')
+        fig.update_layout(margin=dict(t=40, b=40, l=180, r=60))
         st.plotly_chart(fig, use_container_width=True, theme=None)
 
     with col_b:
