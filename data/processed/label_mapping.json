@@ -1,0 +1,11 @@
+{
+  "AI Engineer": 0,
+  "Back End Developer": 1,
+  "Business Analyst": 2,
+  "Front End Developer": 3,
+  "Full-Stack Developer": 4,
+  "ML Engineer": 5,
+  "Mobile Developer": 6,
+  "Network Security Engineer": 7,
+  "Project Management": 8
+}
